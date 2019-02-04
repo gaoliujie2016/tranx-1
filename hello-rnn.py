@@ -13,11 +13,13 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.cell = nn.RNN(input_size=4, hidden_size=4, batch_first=True)
 
+
     def forward(self, h, x):
         x = x.view(1, 1, 4)
         y, h = self.cell(x, h)
 
         return h, y.view(-1, 4)
+
 
     def init_hidden(self):
         return Variable(torch.zeros(1, 1, 4))
@@ -56,7 +58,6 @@ for e in range(100):
 
     loss.backward()
     optimizer.step()
-
 
 # output
 with torch.no_grad():
