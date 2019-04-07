@@ -1,10 +1,10 @@
 # coding=utf-8
 
 from __future__ import print_function
-import argparse
+
 from collections import Counter
 from itertools import chain
-import torch
+
 
 class VocabEntry(object):
     def __init__(self):

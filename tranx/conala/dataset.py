@@ -1,19 +1,17 @@
 import json
-import sys
-import numpy as np
 import pickle
+import sys
 
-from components.action_info import get_action_infos
-from conala.util import *
-from asdl.lang.py3.py3_transition_system import python_ast_to_asdl_ast, asdl_ast_to_python_ast, Python3TransitionSystem
+import numpy as np
 
 from asdl.hypothesis import *
+from asdl.lang.py3.py3_transition_system import Python3TransitionSystem, asdl_ast_to_python_ast, python_ast_to_asdl_ast
 from asdl.transition_system import *
-
-from components.vocab import Vocab, VocabEntry
+from components.action_info import get_action_infos
 from components.dataset import Example
-from components.dataset import Dataset
-from components.action_info import ActionInfo
+from components.vocab import Vocab, VocabEntry
+from conala.evaluator import ConalaEvaluator
+from conala.util import *
 
 
 def preprocess_conala_dataset(train_file, test_file, grammar_file, src_freq=3, code_freq=3):
@@ -174,7 +172,7 @@ def preprocess_example(example_json):
 
 
 def generate_vocab_for_paraphrase_model(vocab_path, save_path):
-    from components.vocab import VocabEntry, Vocab
+    from components.vocab import VocabEntry
 
     vocab = pickle.load(open(vocab_path, 'rb'))
     para_vocab = VocabEntry()
