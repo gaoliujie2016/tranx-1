@@ -7,7 +7,7 @@ except:
     from io import StringIO
 
 from collections import Iterable
-from asdl.asdl import *
+from asdl.asdl_base import *
 from asdl.asdl_ast import RealizedField, AbstractSyntaxTree
 
 from common.registerable import Registrable
@@ -156,7 +156,7 @@ def ast_to_prolog_expr(asdl_ast):
             if i == 0: sb.write(' ')
             else: sb.write(' , ')
             sb.write(arg_val)
-        
+
         sb.write(' )')
     elif constructor_name == 'And':
         for i, arg_ast in enumerate(asdl_ast['arguments'].value):

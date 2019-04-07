@@ -1,11 +1,8 @@
 # coding=utf-8
 
-try:
-    from cStringIO import StringIO
-except:
-    from io import StringIO
+from io import StringIO
 
-from .asdl import *
+from asdl.asdl_base import *
 
 
 class AbstractSyntaxTree(object):
@@ -136,13 +133,15 @@ class AbstractSyntaxTree(object):
             for val in field.as_value_list:
                 if isinstance(val, AbstractSyntaxTree):
                     node_num += val.size
-                else: node_num += 1
+                else:
+                    node_num += 1
 
         return node_num
 
 
 class RealizedField(Field):
     """wrapper of field realized with values"""
+
     def __init__(self, field, value=None, parent=None):
         super(RealizedField, self).__init__(field.name, field.type, field.cardinality)
 
@@ -179,20 +178,27 @@ class RealizedField(Field):
     @property
     def as_value_list(self):
         """get value as an iterable"""
-        if self.cardinality == 'multiple': return self.value
-        elif self.value is not None: return [self.value]
-        else: return []
+        if self.cardinality == 'multiple':
+            return self.value
+        elif self.value is not None:
+            return [self.value]
+        else:
+            return []
 
     @property
     def finished(self):
         if self.cardinality == 'single':
-            if self.value is None: return False
-            else: return True
+            if self.value is None:
+                return False
+            else:
+                return True
         elif self.cardinality == 'optional' and self.value is not None:
             return True
         else:
-            if self._not_single_cardinality_finished: return True
-            else: return False
+            if self._not_single_cardinality_finished:
+                return True
+            else:
+                return False
 
     def set_finish(self):
         # assert self.cardinality in ('optional', 'multiple')
@@ -201,6 +207,9 @@ class RealizedField(Field):
     def __eq__(self, other):
         if super(RealizedField, self).__eq__(other):
             if type(other) == Field: return True  # FIXME: hack, Field and RealizedField can compare!
-            if self.value == other.value: return True
-            else: return False
-        else: return False
+            if self.value == other.value:
+                return True
+            else:
+                return False
+        else:
+            return False

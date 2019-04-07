@@ -62,7 +62,7 @@ patience                       : 5 # Training patience
 max_num_trial                  : 5 # Stop training after x number of trials
 
 uniform_init                   : false # If specified, use uniform initialization for all parameters
-glorot_init                    : true # Use glorot initialization
+xavier_init                    : true # Use xavier initialization
 
 clip_grad                      : 5.0 # Clip gradients
 max_epoch                      : 50 # Maximum number of training epoches

@@ -1,8 +1,20 @@
 import astor
 
 from common.registerable import Registrable
-from datasets.utils import ExampleProcessor
-from datasets.conala.dataset import canonicalize_intent, tokenize_intent, asdl_ast_to_python_ast, decanonicalize_code
+from conala.conala_preprocess import asdl_ast_to_python_ast, canonicalize_intent, decanonicalize_code, tokenize_intent
+
+
+class ExampleProcessor(object):
+    """
+    Process a raw input utterance using domain-specific procedures (e.g., stemming),
+    and post-process a generated hypothesis to the final form
+    """
+
+    def pre_process_utterance(self, utterance):
+        raise NotImplementedError
+
+    def post_process_hypothesis(self, hyp, meta_info, **kwargs):
+        raise NotImplementedError
 
 
 @Registrable.register('conala_example_processor')
@@ -10,7 +22,8 @@ class ConalaExampleProcessor(ExampleProcessor):
     def __init__(self, transition_system):
         self.transition_system = transition_system
 
-    def pre_process_utterance(self, utterance):
+    @staticmethod
+    def pre_process_utterance(utterance):
         canonical_intent, slot_map = canonicalize_intent(utterance)
         intent_tokens = tokenize_intent(canonical_intent)
 

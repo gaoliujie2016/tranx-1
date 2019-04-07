@@ -1,8 +1,8 @@
 # coding=utf-8
 
-from .asdl import *
-from .asdl_ast import AbstractSyntaxTree
-from .transition_system import *
+from asdl.asdl_base import ASDLCompositeType
+from asdl.asdl_ast import AbstractSyntaxTree
+from asdl.transition_system import *
 
 
 class Hypothesis(object):
@@ -77,8 +77,10 @@ class Hypothesis(object):
                 for field in tree_node.fields:
                     # if it's an intermediate node, check its children
                     if isinstance(field.type, ASDLCompositeType) and field.value:
-                        if field.cardinality in ('single', 'optional'): iter_values = [field.value]
-                        else: iter_values = field.value
+                        if field.cardinality in ('single', 'optional'):
+                            iter_values = [field.value]
+                        else:
+                            iter_values = field.value
 
                         for child_node in iter_values:
                             result = _find_frontier_node_and_field(child_node)
@@ -89,7 +91,8 @@ class Hypothesis(object):
                         return tree_node, field
 
                 return None
-            else: return None
+            else:
+                return None
 
         frontier_info = _find_frontier_node_and_field(self.tree)
         if frontier_info:

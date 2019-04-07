@@ -1,7 +1,5 @@
 # coding=utf-8
 
-from __future__ import print_function
-
 import ast
 import itertools
 import re
@@ -108,10 +106,7 @@ def replace_identifiers_in_ast(py_ast, identifier2slot):
 
 
 def is_enumerable_str(identifier_value):
-    """
-    Test if the quoted identifier value is a list
-    """
-
+    # Test if the quoted identifier value is a list
     return len(identifier_value) > 2 and identifier_value[0] in ('{', '(', '[') and identifier_value[-1] in ('}', ']', ')')
 
 

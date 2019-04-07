@@ -34,8 +34,8 @@ class GenTokenAction(Action):
 
 
 class ReduceAction(Action):
-   def __repr__(self):
-       return 'Reduce'
+    def __repr__(self):
+        return 'Reduce'
 
 
 class TransitionSystem(object):

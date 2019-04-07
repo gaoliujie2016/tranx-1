@@ -147,7 +147,7 @@ def uniform_init(lower, upper, params):
         p.data.uniform_(lower, upper)
 
 
-def glorot_init(params):
+def xavier_init(params):
     for p in params:
         if len(p.data.size()) > 1:
             init.xavier_normal_(p.data)

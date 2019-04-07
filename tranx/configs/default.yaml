@@ -61,7 +61,7 @@ save_all_models                : false # Save all intermediate checkpoints
 patience                       : 5 # Training patience
 max_num_trial                  : 10 # Stop training after x number of trials
 uniform_init                   : # If specified, use uniform initialization for all parameters'
-glorot_init                    : false # Use glorot initialization
+xavier_init                    : false # Use xavier initialization
 clip_grad                      : 5.0 # Clip gradients
 max_epoch                      : -1 # Maximum number of training epoches
 optimizer                      : Adam

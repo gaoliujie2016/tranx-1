@@ -1,8 +1,9 @@
 # coding=utf-8
+
 from collections import OrderedDict
 from itertools import chain
 
-from .utils import remove_comment
+from asdl.utils import remove_comment
 
 
 class ASDLGrammar(object):

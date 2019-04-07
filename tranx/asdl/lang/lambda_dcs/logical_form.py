@@ -8,7 +8,7 @@ except:
 
 from collections import Iterable
 
-from asdl.asdl import *
+from asdl.asdl_base import *
 from asdl.asdl_ast import AbstractSyntaxTree, RealizedField
 
 

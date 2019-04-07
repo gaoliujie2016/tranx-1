@@ -11,7 +11,7 @@ from tensorboardX import SummaryWriter
 
 import common.cli_logger as cli_logger
 import evaluation
-from asdl.asdl import ASDLGrammar
+from asdl.asdl_base import ASDLGrammar
 from common.registerable import Registrable
 from common.utils import dump_cfg, init_cfg
 from components.dataset import Dataset
@@ -77,9 +77,9 @@ def train(cfg: argparse.Namespace):
     if cfg.uniform_init:
         print('uniformly initialize parameters [-%f, +%f]' % (cfg.uniform_init, cfg.uniform_init), file=sys.stderr)
         nn_utils.uniform_init(-cfg.uniform_init, cfg.uniform_init, model.parameters())
-    elif cfg.glorot_init:
-        print('use glorot initialization', file=sys.stderr)
-        nn_utils.glorot_init(model.parameters())
+    elif cfg.xavier_init:
+        print('use xavier initialization', file=sys.stderr)
+        nn_utils.xavier_init(model.parameters())
 
     # load pre-trained word embedding (optional)
     if cfg.glove_embed_path:
