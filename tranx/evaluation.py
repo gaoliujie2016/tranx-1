@@ -4,57 +4,71 @@ import sys
 import traceback
 from tqdm import tqdm
 
+import common.cli_logger as cli_logger
 
+
+## TODO: create decoder for each dataset
 def decode(examples, model, args, verbose=False, **kwargs):
-    ## TODO: create decoder for each dataset
+    """
+    TODO: add doc
+    """
 
     if verbose:
-        print('evaluating %d examples' % len(examples))
+        cli_logger.debug(f'[decode] evaluating {len(examples)} examples')
 
     was_training = model.training
     model.eval()
 
-    decode_results = []
-    count = 0
+    decoded_results = []
+
+    import random
+    random.shuffle(examples)
+
     for example in tqdm(examples, desc='Decoding', file=sys.stdout, total=len(examples)):
+        if verbose: cli_logger.debug(example)
+
         hyps = model.parse(example.src_sent, context=None, beam_size=args.beam_size)
         decoded_hyps = []
-        for hyp_id, hyp in enumerate(hyps):
+
+        for i, hyp in enumerate(hyps):
             got_code = False
+
             try:
                 hyp.code = model.transition_system.ast_to_surface_code(hyp.tree)
+                if verbose: cli_logger.debug(hyp.code)
+
                 got_code = True
                 decoded_hyps.append(hyp)
             except:
                 if verbose:
-                    print("Exception in converting tree to code:", file=sys.stdout)
-                    print('-' * 60, file=sys.stdout)
-                    print('Example: %s\nIntent: %s\nTarget Code:\n%s\nHypothesis[%d]:\n%s' % (
-                        example.idx, ' '.join(example.src_sent), example.tgt_code, hyp_id, hyp.tree.to_string()),
-                        file=sys.stdout
-                    )
+                    err_msg = 'Exception in converting tree to code:\n' + '-' * 64 + '\n' + \
+                              'Example: %s\nIntent: %s\nTarget Code:\n%s\nHypothesis[%d]:\n%s' % (
+                                  example.idx, " ".join(example.src_sent), example.tgt_code, i, hyp.tree.to_string()
+                              )
+                    cli_logger.error(err_msg, do_raise=False)
 
                     if got_code:
-                        print()
-                        print(hyp.code)
-                    traceback.print_exc(file=sys.stdout)
-                    print('-' * 60, file=sys.stdout)
+                        cli_logger.debug("\nGot code:" + hyp.code)
 
-        count += 1
-        decode_results.append(decoded_hyps)
+                    traceback.print_exc(file=sys.stdout)
+                    cli_logger.debug('-' * 60)
+
+        decoded_results.append(decoded_hyps)
 
     if was_training:
         model.train()
 
-    return decode_results
+    return decoded_results
 
 
-def evaluate(examples, parser, evaluator, args, verbose=False, return_decode_result=False, eval_top_pred_only=False):
-    decode_results = decode(examples, parser, args, verbose=verbose)
+def evaluate(examples, parser, evaluator, args, verbose=False, return_decoded_result=False, eval_top_pred_only=False):
+    cli_logger.info(f"[evaluate] Decoding ...")
+    decoded_results = decode(examples, parser, args, verbose=verbose)
 
-    eval_result = evaluator.evaluate_dataset(examples, decode_results, fast_mode=eval_top_pred_only)
+    cli_logger.info(f"[evaluate] Evaluate dataset ...")
+    eval_result = evaluator.evaluate_dataset(examples, decoded_results, fast_mode=eval_top_pred_only)
 
-    if return_decode_result:
-        return eval_result, decode_results
+    if return_decoded_result:
+        return eval_result, decoded_results
     else:
         return eval_result

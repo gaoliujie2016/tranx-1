@@ -1,19 +1,13 @@
 # coding=utf-8
+import pickle
 from collections import OrderedDict
 
 import numpy as np
 import torch
-
-try:
-    import cPickle as pickle
-except:
-    import pickle
-
 from torch.autograd import Variable
 
 from asdl.transition_system import ApplyRuleAction, ReduceAction
 from common.utils import CachedProperty
-
 from model import nn_utils
 
 
@@ -26,6 +20,9 @@ class Example(object):
 
         self.idx = idx
         self.meta = meta
+
+    def __str__(self):
+        return f"example<\n" + "src:\t" + " ".join(self.src_sent) + "\ntgt:\t" + self.tgt_code + "\n>"
 
 
 class Dataset(object):
@@ -42,8 +39,7 @@ class Dataset(object):
 
     @staticmethod
     def from_bin_file(file_path):
-        examples = pickle.load(open(file_path, 'rb'))
-        return Dataset(examples)
+        return Dataset(examples=pickle.load(open(file_path, 'rb')))
 
     def batch_iter(self, batch_size, shuffle=False):
         index_arr = np.arange(len(self.examples))

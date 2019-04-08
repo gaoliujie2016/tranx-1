@@ -45,13 +45,13 @@ def python_ast_to_asdl_ast(py_ast_node, grammar):
                     asdl_field.add_value(str(field_value))
         # field with multiple cardinality
         elif field_value is not None:
-                if grammar.is_composite_type(field.type):
-                    for val in field_value:
-                        child_node = python_ast_to_asdl_ast(val, grammar)
-                        asdl_field.add_value(child_node)
-                else:
-                    for val in field_value:
-                        asdl_field.add_value(str(val))
+            if grammar.is_composite_type(field.type):
+                for val in field_value:
+                    child_node = python_ast_to_asdl_ast(val, grammar)
+                    asdl_field.add_value(child_node)
+            else:
+                for val in field_value:
+                    asdl_field.add_value(str(val))
 
         fields.append(asdl_field)
 
@@ -65,8 +65,9 @@ def asdl_ast_to_python_ast(asdl_ast_node, grammar):
     py_ast_node = py_node_type()
 
     for field in asdl_ast_node.fields:
-        # for composite node
         field_value = None
+
+        # composite node
         if grammar.is_composite_type(field.type):
             if field.value and field.cardinality == 'multiple':
                 field_value = []
@@ -75,8 +76,9 @@ def asdl_ast_to_python_ast(asdl_ast_node, grammar):
                     field_value.append(node)
             elif field.value and field.cardinality in ('single', 'optional'):
                 field_value = asdl_ast_to_python_ast(field.value, grammar)
+
+        # primitive node, note that primitive field may have `None` value
         else:
-            # for primitive node, note that primitive field may have `None` value
             if field.value is not None:
                 if field.type.name == 'object':
                     if '.' in field.value or 'e' in field.value:

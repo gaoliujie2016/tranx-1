@@ -1,8 +1,6 @@
 # coding=utf-8
 
-from asdl.asdl_base import *
 from asdl.hypothesis import Hypothesis
-from asdl.transition_system import *
 
 
 class DecodeHypothesis(Hypothesis):

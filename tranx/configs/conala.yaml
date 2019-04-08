@@ -1,7 +1,7 @@
 ## general configuration
 mode                           : train # train / test
 seed                           : 0
-cuda                           : false
+cuda                           : true
 asdl_file                      : asdl/lang/py3/py3_asdl.simplified.txt # path to asdl grammar spec
 
 ## modularized configuration
@@ -72,14 +72,15 @@ lr_decay                       : 0.5 # decay learning rate if the validation per
 lr_decay_after_epoch           : 15 # Decay learning rate after x epoch
 decay_lr_every_epoch           : false # force to decay learning rate after each epoch
 reset_optimizer                : false # Whether to reset optimizer when loading the best checkpoint
-verbose                        : false # Verbose mode
-eval_top_pred_only             : false # Only evaluate the top prediction in validation
 
-## decoding/validation/testing
-load_model                     : # Load a pre-trained model
-exp_name                       : initial # experiment name
+## decoding / validation / testing
+load_model                     : ../tranx-data/data/pretrained_models/conala_2.bin # Load a pre-trained model
+exp_name                       : conala-pretrained-test # experiment name
 beam_size                      : 15 # Beam size for beam search
 decode_max_time_step           : 100 # Maximum number of time steps used in decoding and sampling
 sample_size                    : 5 # Sample size
-test_file                      : # Path to the test file
-save_decode_to                 : #Save decoding results to file
+test_file                      : ../tranx-data/data/conala/test_2.var_str_sep.bin # Path to the test file
+save_decode_to                 : experiments/conala.test.decode #Save decoding results to file
+
+verbose                        : true # Verbose mode
+eval_top_pred_only             : false # Only evaluate the top prediction in validation

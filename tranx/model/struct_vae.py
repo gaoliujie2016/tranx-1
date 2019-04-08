@@ -81,7 +81,7 @@ class StructVAE(nn.Module):
         # compute baseline, which is an MLP
         # (sample_size) FIXME: reward is log-likelihood, shall we use activation here?
 
-        b_x = self.b_x_l2(F.tanh(self.b_x_l1(enc_states.detach()))).view(-1)
+        b_x = self.b_x_l2(torch.tanh(self.b_x_l1(enc_states.detach()))).view(-1)
 
         return b_x + self.b
 
@@ -170,7 +170,7 @@ class StructVAE_LMBaseline(StructVAE):
         p_lm = -self.b_lm(src_sent_var)
 
         return self.b_lm_weight * p_lm - self.b
-    
+
     def train(self):
         super(StructVAE_LMBaseline, self).train()
         self.b_lm.eval()

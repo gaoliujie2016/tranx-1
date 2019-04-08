@@ -5,7 +5,7 @@ import os
 import sys
 import time
 
-import six.moves.cPickle as pickle
+import pickle
 import torch
 from tensorboardX import SummaryWriter
 
