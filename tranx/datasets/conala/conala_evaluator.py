@@ -1,15 +1,20 @@
 import ast
+import os
+import sys
 
 import astor
 import numpy as np
 from nltk.translate.bleu_score import SmoothingFunction, sentence_bleu
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+
+from common.bleu_score import compute_bleu
 from common.registerable import Registrable
 from components.dataset import Dataset
 from components.evaluator import Evaluator
-from common.bleu_score import compute_bleu
-from conala.conala_eval import tokenize_for_bleu_eval
-from conala.util import decanonicalize_code
+
+from datasets.conala.conala_eval import tokenize_for_bleu_eval
+from datasets.conala.utils import decanonicalize_code
 
 
 @Registrable.register('conala_evaluator')

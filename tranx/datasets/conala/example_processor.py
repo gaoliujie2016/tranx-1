@@ -1,7 +1,12 @@
 import astor
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
 
 from common.registerable import Registrable
-from conala.conala_preprocess import asdl_ast_to_python_ast, canonicalize_intent, decanonicalize_code, tokenize_intent
+from datasets.conala.utils import canonicalize_intent, decanonicalize_code, tokenize_intent
+from asdl.lang.py.py_asdl_helper import asdl_ast_to_python_ast
 
 
 class ExampleProcessor(object):

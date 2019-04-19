@@ -1,0 +1,86 @@
+## general configuration
+mode                           : train # train / test
+seed                           : 0
+cuda                           : true
+asdl_file                      : asdl/lang/py3/py3_asdl.simplified.txt # path to asdl grammar spec
+
+## modularized configuration
+parser                         : default_parser # name of parser class to load
+transition_system              : python3 # name of transition system to use
+evaluator                      : # name of evaluator class to use
+
+## model configuration
+lstm                           : lstm # Type of LSTM used, currently only standard LSTM cell is supported
+
+## embedding sizes
+embed_size                     : 128 # Size of word embeddings
+action_embed_size              : 128 # Size of ApplyRule/GenToken action embeddings
+field_embed_size               : 64 # Embedding size of ASDL fields
+type_embed_size                : 64 # Embeddings ASDL types
+
+## hidden sizes
+hidden_size                    : 256 # Size of LSTM hidden states
+ptrnet_hidden_dim              : 32 # Hidden dimension used in pointer network
+att_vec_size                   : 256 # size of attentional vector
+
+## readout layer
+no_query_vec_to_action_map     : false # Do not use additional linear layer to transform the attentional vector for computing action probabilities
+readout                        : identity # Type of activation if using additional linear layer: identity / non_linear
+query_vec_to_action_diff_map   : false # Use different linear mapping
+
+## supervised attention
+sup_attention                  : false # Use supervised attention
+
+## parent information switch for decoder LSTM
+no_parent_production_embed     : true # Do not use embedding of parent ASDL production to update decoder LSTM state
+no_parent_field_embed          : false # Do not use embedding of parent field to update decoder LSTM state
+no_parent_field_type_embed     : true # Do not use embedding of the ASDL type of parent field to update decoder LSTM state
+no_parent_state                : false # Do not use the parent hidden state to update decoder LSTM state
+no_input_feed                  : false # Do not use input feeding in decoder LSTM
+no_copy                        : false # Do not use copy mechanism
+
+## TRAINING
+vocab                          : # Path of the serialized vocabulary
+train_file                     : # path to the training target file
+dev_file                       : # Path to the dev source file
+glove_embed_path               : # Path to pretrained Glove embedding
+batch_size                     : 10
+dropout                        : 0.3
+word_dropout                   : 0.0
+decoder_word_dropout           : 0.3
+primitive_token_label_smoothing: 0.0 # Apply label smoothing when predicting primitive tokens
+src_token_label_smoothing      : 0.0 # Apply label smoothing in reconstruction model when predicting source tokens
+negative_sample_type           : best # best / sample / all
+
+## training schedule details
+valid_metric                   : acc # Metric used for validation
+valid_every_epoch              : 1 # Perform validation every x epoch
+log_every                      : 10  #Log training statistics every n iterations
+save_to                        : model # Save trained model to
+save_all_models                : false # Save all intermediate checkpoints
+patience                       : 5 # Training patience
+max_num_trial                  : 5 # Stop training after x number of trials
+
+uniform_init                   : false # If specified, use uniform initialization for all parameters
+xavier_init                    : true # Use xavier initialization
+
+clip_grad                      : 5.0 # Clip gradients
+max_epoch                      : 50 # Maximum number of training epoches
+optimizer                      : Adam
+lr                             : 0.001 # Learning rate
+lr_decay                       : 0.5 # decay learning rate if the validation performance drops
+lr_decay_after_epoch           : 15 # Decay learning rate after x epoch
+decay_lr_every_epoch           : false # force to decay learning rate after each epoch
+reset_optimizer                : false # Whether to reset optimizer when loading the best checkpoint
+
+## decoding / validation / testing
+load_model                     : # Load a pre-trained model
+exp_name                       : # experiment name
+beam_size                      : 15 # Beam size for beam search
+decode_max_time_step           : 100 # Maximum number of time steps used in decoding and sampling
+sample_size                    : 5 # Sample size
+test_file                      : # Path to the test file
+save_decode_to                 : #Save decoding results to file
+
+verbose                        : true # Verbose mode
+eval_top_pred_only             : false # Only evaluate the top prediction in validation

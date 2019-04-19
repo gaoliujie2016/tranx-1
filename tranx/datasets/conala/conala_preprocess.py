@@ -3,7 +3,7 @@ import os
 import pickle
 import sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
 
 import numpy as np
 from asdl.asdl_base import ASDLGrammar
@@ -13,8 +13,9 @@ from asdl.transition_system import *
 from components.action_info import get_action_infos
 from components.dataset import Example
 from components.vocab import Vocab, VocabEntry
-from conala.evaluator import ConalaEvaluator
-from conala.util import *
+from conala_evaluator import ConalaEvaluator
+
+from datasets.conala.utils import *
 
 from pprint import pprint
 

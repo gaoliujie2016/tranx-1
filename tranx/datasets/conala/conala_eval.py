@@ -7,6 +7,8 @@ import token
 import tokenize
 import argparse
 
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../'))
+
 import common.bleu_score as bleu_score
 
 
