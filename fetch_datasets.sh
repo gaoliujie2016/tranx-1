@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR=./datasets
+DIR=./raw-datasets
 
 get_conala () {
     aria2c http://www.phontron.com/download/conala-corpus-v1.1.zip -d ./ --continue=true
@@ -15,13 +15,14 @@ get_naps () {
     rm -f *.zip *.tar.gz
 }
 
+get_django () {
+    mkdir -p django
+    aria2c https://raw.githubusercontent.com/odashi/ase15-django-dataset/master/django/all.anno -d ./django
+    aria2c https://raw.githubusercontent.com/odashi/ase15-django-dataset/master/django/all.code -d ./django
+}
+
 pushd . && mkdir -p $DIR && cd $DIR
 
-for d in "$@"
-do
-    echo "Getting $d"
-    get_$d
-    echo
-done
+for d in "$@"; do echo "Getting $d" && get_$d && echo; done
 
 popd
