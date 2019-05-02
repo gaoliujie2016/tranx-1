@@ -2,24 +2,22 @@
 from __future__ import print_function
 
 import os
-from six.moves import xrange as range
-import math
 from collections import OrderedDict
-import numpy as np
 
+import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.nn.utils
 from torch.autograd import Variable
-import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
-from asdl.hypothesis import Hypothesis, GenTokenAction
-from asdl.transition_system import ApplyRuleAction, ReduceAction, Action
+from asdl.hypothesis import GenTokenAction
+from asdl.transition_system import ApplyRuleAction, ReduceAction
 from common.registerable import Registrable
-from components.decode_hypothesis import DecodeHypothesis
 from components.action_info import ActionInfo
 from components.dataset import Batch
+from components.decode_hypothesis import DecodeHypothesis
 # from common.utils import update_args, init_arg_parser
 from model import nn_utils
 from model.attention_util import AttentionUtil
@@ -27,9 +25,13 @@ from model.nn_utils import LabelSmoothing
 from model.pointer_net import PointerNet
 
 
+# TODO: needs cleaning!!
+
+
 @Registrable.register('default_parser')
 class Parser(nn.Module):
-    """Implementation of a semantic parser
+    """
+    Implementation of a semantic parser
 
     The parser translates a natural language utterance into an AST defined under
     the ASDL specification, using the transition system described in https://arxiv.org/abs/1810.02720
@@ -82,6 +84,7 @@ class Parser(nn.Module):
             input_dim += args.att_vec_size * (not args.no_input_feed)  # input feeding
 
             self.decoder_lstm = nn.LSTMCell(input_dim, args.hidden_size)
+
         elif args.lstm == 'parent_feed':
             self.encoder_lstm = nn.LSTM(args.embed_size, int(args.hidden_size / 2), bidirectional=True)
             from .lstm import ParentFeedingLSTMCell
@@ -94,6 +97,7 @@ class Parser(nn.Module):
             input_dim += args.att_vec_size * (not args.no_input_feed)  # input feeding
 
             self.decoder_lstm = ParentFeedingLSTMCell(input_dim, args.hidden_size)
+
         else:
             raise ValueError('Unknown LSTM type %s' % args.lstm)
 
@@ -164,7 +168,8 @@ class Parser(nn.Module):
             self.new_tensor = torch.FloatTensor
 
     def encode(self, src_sents_var, src_sents_len):
-        """Encode the input natural language utterance
+        """
+        Encode the input natural language utterance
 
         Args:
             src_sents_var: a variable of shape (src_sent_len, batch_size), representing word ids of the input
@@ -305,7 +310,8 @@ class Parser(nn.Module):
         return returns
 
     def step(self, x, h_tm1, src_encodings, src_encodings_att_linear, src_token_mask=None, return_att_weight=False):
-        """Perform a single time-step of computation in decoder LSTM
+        """
+        Perform a single time-step of computation in decoder LSTM
 
         Args:
             x: variable of shape (batch_size, hidden_size), input
@@ -336,7 +342,8 @@ class Parser(nn.Module):
             return (h_t, cell_t), att_t
 
     def decode(self, batch, src_encodings, dec_init_vec):
-        """Given a batch of examples and their encodings of input utterances,
+        """
+        Given a batch of examples and their encodings of input utterances,
         compute query vectors at each decoding time step, which are used to compute
         action probabilities
 

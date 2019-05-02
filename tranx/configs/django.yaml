@@ -7,7 +7,7 @@ asdl_file                      : asdl/lang/py3/py3_asdl.simplified.txt # path to
 ## modularized configuration
 parser                         : default_parser # name of parser class to load
 transition_system              : python3 # name of transition system to use
-evaluator                      : conala_evaluator # name of evaluator class to use
+evaluator                      : django_evaluator # name of evaluator class to use
 
 ## model configuration
 lstm                           : lstm # Type of LSTM used, currently only standard LSTM cell is supported
@@ -40,9 +40,9 @@ no_input_feed                  : false # Do not use input feeding in decoder LST
 no_copy                        : false # Do not use copy mechanism
 
 ## TRAINING
-vocab                          : ../tranx-data/data/conala/vocab.var_str_sep.src_freq3.code_freq3.bin # Path of the serialized vocabulary
-train_file                     : ../tranx-data/data/conala/train.var_str_sep.bin # path to the training target file
-dev_file                       : ../tranx-data/data/conala/dev.var_str_sep.bin # Path to the dev source file
+vocab                          : # Path of the serialized vocabulary
+train_file                     : # path to the training target file
+dev_file                       : # Path to the dev source file
 glove_embed_path               : # Path to pretrained Glove embedding
 batch_size                     : 10
 dropout                        : 0.3
@@ -65,7 +65,7 @@ uniform_init                   : false # If specified, use uniform initializatio
 xavier_init                    : true # Use xavier initialization
 
 clip_grad                      : 5.0 # Clip gradients
-max_epoch                      : 50 # Maximum number of training epoches
+max_epoch                      : 50 # Maximum number of training epochesq
 optimizer                      : Adam
 lr                             : 0.001 # Learning rate
 lr_decay                       : 0.5 # decay learning rate if the validation performance drops
@@ -74,13 +74,13 @@ decay_lr_every_epoch           : false # force to decay learning rate after each
 reset_optimizer                : false # Whether to reset optimizer when loading the best checkpoint
 
 ## decoding / validation / testing
-load_model                     : ../tranx-data/data/pretrained_models/conala_2.bin # Load a pre-trained model
-exp_name                       : conala-pretrained-test # experiment name
+load_model                     : ../tranx-data/data/pretrained_models/django_2.bin # Load a pre-trained model
+exp_name                       : django-pretrained-test # experiment name
 beam_size                      : 15 # Beam size for beam search
 decode_max_time_step           : 100 # Maximum number of time steps used in decoding and sampling
 sample_size                    : 5 # Sample size
-test_file                      : ../tranx-data/data/conala/test_2.var_str_sep.bin # Path to the test file
-save_decode_to                 : experiments/conala.test.decode #Save decoding results to file
+test_file                      : ../tranx-data/data/django/test_2.bin # Path to the test file
+save_decode_to                 : experiments/django.test.decode #Save decoding results to file
 
 verbose                        : false # Verbose mode
 eval_top_pred_only             : false # Only evaluate the top prediction in validation

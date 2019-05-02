@@ -123,8 +123,7 @@ class ConalaEvaluator(Evaluator):
 
             avg_sent_bleu = np.average(sent_bleu_scores)
             oracle_avg_sent_bleu = np.average(oracle_bleu_scores)
-            exact = sum([1 if h == r else 0 for h, r in zip(hyp_code_tokens, tokenized_ref_snippets)]) / float(
-                len(examples))
+            exact = sum([1 if h == r else 0 for h, r in zip(hyp_code_tokens, tokenized_ref_snippets)]) / float(len(examples))
             oracle_exact_match = np.average(oracle_exact_match)
 
             return {'corpus_bleu'         : corpus_bleu,

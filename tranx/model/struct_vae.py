@@ -1,22 +1,14 @@
 # coding=utf-8
 from __future__ import print_function
 
-import sys
 import traceback
 
-import os
-import copy
-import torch
-import torch.nn as nn
 import torch.nn.utils
-from torch.autograd import Variable
-import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
 
 from components.dataset import Example
 from model.prior import UniformPrior
-from parser import *
 from model.reconstruction_model import *
+from parser import *
 
 
 class StructVAE(nn.Module):
@@ -66,14 +58,14 @@ class StructVAE(nn.Module):
         # compute baseline loss
         baseline_loss = learning_signal ** 2
 
-        meta_data = {'samples': samples,
+        meta_data = {'samples'              : samples,
                      'reconstruction_scores': reconstruction_scores,
-                     'encoding_scores': sample_scores,
-                     'raw_learning_signal': raw_learning_signal,
-                     'learning_signal': learning_signal,
-                     'baseline': baseline,
-                     'kl_term': kl_term,
-                     'prior': prior_scores}
+                     'encoding_scores'      : sample_scores,
+                     'raw_learning_signal'  : raw_learning_signal,
+                     'learning_signal'      : learning_signal,
+                     'baseline'             : baseline,
+                     'kl_term'              : kl_term,
+                     'prior'                : prior_scores}
 
         return encoder_loss, decoder_loss, baseline_loss, meta_data
 
@@ -106,10 +98,10 @@ class StructVAE(nn.Module):
                     code = self.transition_system.ast_to_surface_code(hyp.tree)
                     self.transition_system.tokenize_code(code)  # make sure the code is tokenizable!
                     sampled_example = Example(idx='%d-sample%d' % (example.idx, hyp_id),
-                                              src_sent=example.src_sent,
-                                              tgt_code=code,
-                                              tgt_actions=hyp.action_infos,
-                                              tgt_ast=hyp.tree)
+                        src_sent=example.src_sent,
+                        tgt_code=code,
+                        tgt_actions=hyp.action_infos,
+                        tgt_ast=hyp.tree)
                     sampled_examples.append(sampled_example)
                 except:
                     print("Exception in converting tree to code:", file=sys.stdout)
@@ -128,7 +120,7 @@ class StructVAE(nn.Module):
         state_dict = {k: v for k, v in self.state_dict().iteritems() if not (k.startswith('decoder') or k.startswith('encoder') or k.startswith('prior'))}
 
         params = {
-            'args': self.args,
+            'args'      : self.args,
             'state_dict': state_dict
         }
 
@@ -165,8 +157,8 @@ class StructVAE_LMBaseline(StructVAE):
 
     def baseline(self, samples, enc_states):
         src_sent_var = nn_utils.to_input_variable([e.src_sent for e in samples],
-                                                  self.b_lm.vocab, cuda=self.args.cuda,
-                                                  append_boundary_sym=True)
+            self.b_lm.vocab, cuda=self.args.cuda,
+            append_boundary_sym=True)
         p_lm = -self.b_lm(src_sent_var)
 
         return self.b_lm_weight * p_lm - self.b

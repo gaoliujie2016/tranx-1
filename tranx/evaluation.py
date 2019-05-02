@@ -1,14 +1,16 @@
 # coding=utf-8
 
+import random
 import sys
 import traceback
+
 from tqdm import tqdm
 
 import common.cli_logger as cli_logger
 
 
 ## TODO: create decoder for each dataset
-def decode(examples, model, args, verbose=False, **kwargs):
+def decode(examples, model, args, shuffle=False, verbose=False, **kwargs):
     """
     TODO: add doc
     """
@@ -16,17 +18,19 @@ def decode(examples, model, args, verbose=False, **kwargs):
     if verbose:
         cli_logger.debug(f'[decode] evaluating {len(examples)} examples')
 
+    if shuffle:
+        cli_logger.debug(f'[decode] shuffling examples')
+        random.shuffle(examples)
+
     was_training = model.training
     model.eval()
 
     decoded_results = []
 
-    import random
-    random.shuffle(examples)
-
     for example in tqdm(examples, desc='Decoding', file=sys.stdout, total=len(examples)):
         if verbose: cli_logger.debug(example)
 
+        # get all hypothesis from the model, sorted by the score
         hyps = model.parse(example.src_sent, context=None, beam_size=args.beam_size)
         decoded_hyps = []
 
@@ -39,7 +43,9 @@ def decode(examples, model, args, verbose=False, **kwargs):
 
                 got_code = True
                 decoded_hyps.append(hyp)
-            except:
+            except Exception as e:
+                cli_logger.exception(e)
+
                 if verbose:
                     err_msg = 'Exception in converting tree to code:\n' + '-' * 64 + '\n' + \
                               'Example: %s\nIntent: %s\nTarget Code:\n%s\nHypothesis[%d]:\n%s' % (
@@ -47,8 +53,7 @@ def decode(examples, model, args, verbose=False, **kwargs):
                               )
                     cli_logger.error(err_msg, do_raise=False)
 
-                    if got_code:
-                        cli_logger.debug("\nGot code:" + hyp.code)
+                    if got_code: cli_logger.debug("\nGot code:" + hyp.code)
 
                     traceback.print_exc(file=sys.stdout)
                     cli_logger.debug('-' * 60)
@@ -61,11 +66,11 @@ def decode(examples, model, args, verbose=False, **kwargs):
     return decoded_results
 
 
-def evaluate(examples, parser, evaluator, args, verbose=False, return_decoded_result=False, eval_top_pred_only=False):
+def evaluate(examples, model, evaluator, args, verbose=False, return_decoded_result=False, eval_top_pred_only=False):
     cli_logger.info(f"[evaluate] Decoding ...")
-    decoded_results = decode(examples, parser, args, verbose=verbose)
+    decoded_results = decode(examples, model, args, shuffle=False, verbose=verbose)
 
-    cli_logger.info(f"[evaluate] Evaluate dataset ...")
+    cli_logger.info(f"[evaluate] Evaluate decoded results ...")
     eval_result = evaluator.evaluate_dataset(examples, decoded_results, fast_mode=eval_top_pred_only)
 
     if return_decoded_result:

@@ -24,7 +24,7 @@ to generate Python code snippets.
 # coding=utf-8
 
 import ast
-from asdl.asdl import ASDLGrammar
+from asdl.asdl_base import ASDLGrammar
 from asdl.lang.py.py_asdl_helper import *
 from asdl.lang.py.py_transition_system import *
 from asdl.hypothesis import *

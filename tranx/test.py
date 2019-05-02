@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import sys
 
 import pickle
 import torch
@@ -14,12 +15,17 @@ from common.utils import dump_cfg, init_cfg
 from components.dataset import Dataset
 import model.parser
 
+# Evaluators
+import datasets.conala.conala_evaluator as conala_evaluator
+import datasets.django.django_evaluator as django_evaluator
+
 
 def prologue(cfg: argparse.Namespace, *varargs) -> str:
     # sanity checks
     assert cfg.load_model not in [None, ""]
     assert cfg.exp_name not in [None, ""]
     assert not cfg.cuda or (cfg.cuda and torch.cuda.is_available())
+    assert cfg.mode == "test"
 
     # dirs
     base_dir = f"./experiments/{cfg.exp_name}"
@@ -63,8 +69,9 @@ def test(cfg: argparse.Namespace):
     evaluator = Registrable.by_name(cfg.evaluator)(transition_system, args=cfg)
     cli_logger.info(f"Loaded evaluator [{cfg.evaluator}]")
 
+    # Do the evaluation
     eval_results, decoded_results = evaluation.evaluate(
-        test_set.examples, parser, evaluator, cfg, verbose=cfg.verbose, return_decoded_result=True
+        examples=test_set.examples, model=parser, evaluator=evaluator, args=cfg, verbose=cfg.verbose, return_decoded_result=True
     )
 
     cli_logger.info(eval_results)
@@ -78,4 +85,4 @@ def test(cfg: argparse.Namespace):
 
 
 if __name__ == '__main__':
-    test(cfg=init_cfg("./configs/conala.yaml", do_seed=True))
+    test(cfg=init_cfg("./configs/django.yaml", do_seed=True))

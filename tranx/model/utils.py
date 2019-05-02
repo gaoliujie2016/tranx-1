@@ -2,8 +2,8 @@
 
 
 import math
+
 import numpy as np
-from torch.autograd import Variable
 
 
 class GloveHelper(object):

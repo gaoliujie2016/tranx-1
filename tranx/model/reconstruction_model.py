@@ -29,15 +29,17 @@ class Reconstructor(nn.Module, RerankingFeature, Savable):
         super(Reconstructor, self).__init__()
         if args.no_copy:
             self.seq2seq = Seq2SeqModel(src_vocab=vocab.code, tgt_vocab=vocab.source,
-                                        embed_size=args.embed_size, hidden_size=args.hidden_size,
-                                        dropout=args.dropout,
-                                        label_smoothing=args.src_token_label_smoothing,
-                                        cuda=args.cuda)
+                embed_size=args.embed_size, hidden_size=args.hidden_size,
+                dropout=args.dropout,
+                label_smoothing=args.src_token_label_smoothing,
+                cuda=args.cuda
+            )
         else:
             self.seq2seq = Seq2SeqWithCopy(src_vocab=vocab.code, tgt_vocab=vocab.source,
-                                           embed_size=args.embed_size, hidden_size=args.hidden_size,
-                                           dropout=args.dropout,
-                                           cuda=args.cuda)
+                embed_size=args.embed_size, hidden_size=args.hidden_size,
+                dropout=args.dropout,
+                cuda=args.cuda
+            )
 
         self.vocab = vocab
         self.args = args
@@ -65,13 +67,13 @@ class Reconstructor(nn.Module, RerankingFeature, Savable):
 
         if isinstance(self.seq2seq, Seq2SeqWithCopy):
             scores = self.seq2seq(src_code_var,
-                                  [len(c) for c in src_codes],
-                                  tgt_nl_var,
-                                  tgt_token_copy_idx_mask, tgt_token_gen_mask)
+                [len(c) for c in src_codes],
+                tgt_nl_var,
+                tgt_token_copy_idx_mask, tgt_token_gen_mask)
         else:
             scores = self.seq2seq(src_code_var,
-                                  [len(c) for c in src_codes],
-                                  tgt_nl_var)
+                [len(c) for c in src_codes],
+                tgt_nl_var)
 
         return scores
 
@@ -148,9 +150,9 @@ class Reconstructor(nn.Module, RerankingFeature, Savable):
             os.makedirs(dir_name)
 
         params = {
-            'args': self.args,
-            'vocab': self.vocab,
-            'state_dict': self.state_dict(),
+            'args'             : self.args,
+            'vocab'            : self.vocab,
+            'state_dict'       : self.state_dict(),
             'transition_system': self.transition_system
         }
 

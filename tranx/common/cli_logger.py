@@ -8,6 +8,11 @@ def info(*msg):
 
 def debug(*msg):
     s = "[D] " + " ".join(list(map(str, msg)))
+    print(colored(s, "magenta"))
+
+
+def exception(*msg):
+    s = "[X] " + " ".join(list(map(str, msg)))
     print(colored(s, "yellow"))
 
 

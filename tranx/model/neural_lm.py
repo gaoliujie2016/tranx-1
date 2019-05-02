@@ -1,15 +1,11 @@
 # coding=utf-8
 import os
-from itertools import chain
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.nn.utils
 from torch.autograd import Variable
-import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
-
-from model import nn_utils
 
 
 class LSTMLanguageModel(nn.Module):
@@ -89,8 +85,8 @@ class LSTMLanguageModel(nn.Module):
             os.makedirs(dir_name)
 
         params = {
-            'args': (self.embed_size, self.hidden_size, self.dropout_rate),
-            'vocab': self.vocab,
+            'args'      : (self.embed_size, self.hidden_size, self.dropout_rate),
+            'vocab'     : self.vocab,
             'state_dict': self.state_dict()
         }
 

@@ -150,8 +150,7 @@ def train(cfg: argparse.Namespace):
             if epoch % cfg.valid_every_epoch == 0:
                 print('[Epoch %d] begin validation' % epoch, file=sys.stderr)
                 eval_start = time.time()
-                eval_results = evaluation.evaluate(dev_set.examples, model, evaluator, cfg,
-                    verbose=True, eval_top_pred_only=cfg.eval_top_pred_only)
+                eval_results = evaluation.evaluate(dev_set.examples, model, evaluator, cfg, verbose=True, eval_top_pred_only=cfg.eval_top_pred_only)
                 dev_score = eval_results[evaluator.default_metric]
 
                 print('[Epoch %d] evaluate details: %s, dev %s: %.5f (took %ds)' % (

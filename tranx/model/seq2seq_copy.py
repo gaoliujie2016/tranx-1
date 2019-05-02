@@ -20,14 +20,14 @@ class Seq2SeqWithCopy(Seq2SeqModel):
                  src_embed_layer=None, tgt_embed_layer=None):
 
         super(Seq2SeqWithCopy, self).__init__(src_vocab, tgt_vocab,
-                                              embed_size, hidden_size,
-                                              dropout=dropout,
-                                              src_embed_layer=src_embed_layer, tgt_embed_layer=tgt_embed_layer,
-                                              cuda=cuda)
+            embed_size, hidden_size,
+            dropout=dropout,
+            src_embed_layer=src_embed_layer, tgt_embed_layer=tgt_embed_layer,
+            cuda=cuda
+        )
 
         # pointer net to the source
-        self.src_pointer_net = PointerNet(src_encoding_size=hidden_size * 2,
-                                          query_vec_size=hidden_size)
+        self.src_pointer_net = PointerNet(src_encoding_size=hidden_size * 2, query_vec_size=hidden_size)
 
         self.tgt_token_predictor = nn.Linear(hidden_size, 2)
 
@@ -78,8 +78,8 @@ class Seq2SeqWithCopy(Seq2SeqModel):
             x = torch.cat([y_tm1_embed, att_tm1], 1)
 
             (h_t, cell_t), att_t = self.step(x, h_tm1,
-                                             src_encodings, src_encodings_att_linear,
-                                             src_sent_masks=src_sent_masks)
+                src_encodings, src_encodings_att_linear,
+                src_sent_masks=src_sent_masks)
 
             att_ves.append(att_t)
 
@@ -122,7 +122,7 @@ class Seq2SeqWithCopy(Seq2SeqModel):
 
         # (tgt_sent_len - 1, batch_size)
         tgt_token_gen_prob = torch.gather(token_gen_prob, dim=2,
-                                          index=tgt_token_idx.unsqueeze(2)).squeeze(2) * tgt_token_gen_mask
+            index=tgt_token_idx.unsqueeze(2)).squeeze(2) * tgt_token_gen_mask
 
         # (tgt_sent_len - 1, batch_size)
         tgt_token_copy_prob = torch.sum(token_copy_prob * tgt_token_copy_idx_mask, dim=-1)
@@ -147,8 +147,8 @@ class Seq2SeqWithCopy(Seq2SeqModel):
         h_t, cell_t = self.decoder_lstm(x, h_tm1)
 
         ctx_t, alpha_t = nn_utils.dot_prod_attention(h_t,
-                                                     src_encodings, src_encodings_att_linear,
-                                                     mask=src_sent_masks)
+            src_encodings, src_encodings_att_linear,
+            mask=src_sent_masks)
 
         att_t = torch.tanh(self.att_vec_linear(torch.cat([h_t, ctx_t], 1)))  # E.q. (5)
         att_t = self.dropout(att_t)
@@ -160,7 +160,7 @@ class Seq2SeqWithCopy(Seq2SeqModel):
         new_long_tensor = torch.cuda.LongTensor if cuda else torch.LongTensor
 
         src_sent_var = nn_utils.to_input_variable([src_sent], self.src_vocab,
-                                                  cuda=cuda, training=False)
+            cuda=cuda, training=False)
 
         # analyze which tokens can be copied from the source
         src_token_tgt_vocab_ids = [self.tgt_vocab[token] for token in src_sent]
@@ -204,8 +204,8 @@ class Seq2SeqWithCopy(Seq2SeqModel):
 
             expanded_src_encodings = src_encodings.expand(hyp_num, src_encodings.size(1), src_encodings.size(2))
             expanded_src_encodings_att_linear = src_encodings_att_linear.expand(hyp_num,
-                                                                                src_encodings_att_linear.size(1),
-                                                                                src_encodings_att_linear.size(2))
+                src_encodings_att_linear.size(1),
+                src_encodings_att_linear.size(2))
 
             y_tm1 = Variable(new_long_tensor([hyp[-1] for hyp in hypotheses_word_ids]), volatile=True)
             y_tm1_embed = self.tgt_embed(y_tm1)
@@ -213,7 +213,7 @@ class Seq2SeqWithCopy(Seq2SeqModel):
             x = torch.cat([y_tm1_embed, att_tm1], 1)
 
             (h_t, cell_t), att_t = self.step(x, h_tm1,
-                                             expanded_src_encodings, expanded_src_encodings_att_linear)
+                expanded_src_encodings, expanded_src_encodings_att_linear)
 
             # (batch_size, 2)
             tgt_token_predictor = F.softmax(self.tgt_token_predictor(att_t), dim=-1)
@@ -271,8 +271,10 @@ class Seq2SeqWithCopy(Seq2SeqModel):
                     completed_hypothesis_scores.append(new_hyp_score)
                 else:
                     if word_id == self.tgt_vocab.unk_id:
-                        if gentoken_new_hyp_unks: word = gentoken_new_hyp_unks[prev_hyp_id]
-                        else: word = self.tgt_vocab.id2word[self.tgt_vocab.unk_id]
+                        if gentoken_new_hyp_unks:
+                            word = gentoken_new_hyp_unks[prev_hyp_id]
+                        else:
+                            word = self.tgt_vocab.id2word[self.tgt_vocab.unk_id]
                     else:
                         word = self.tgt_vocab.id2word[word_id]
 

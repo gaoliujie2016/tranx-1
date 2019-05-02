@@ -2,10 +2,8 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.utils
-from torch.autograd import Variable
 import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
+import torch.nn.utils
 
 
 class PointerNet(nn.Module):
@@ -13,6 +11,7 @@ class PointerNet(nn.Module):
         super(PointerNet, self).__init__()
 
         assert attention_type in ('affine', 'dot_prod')
+
         if attention_type == 'affine':
             self.src_encoding_linear = nn.Linear(src_encoding_size, query_vec_size, bias=False)
 
@@ -29,6 +28,7 @@ class PointerNet(nn.Module):
         # (batch_size, 1, src_sent_len, query_vec_size)
         if self.attention_type == 'affine':
             src_encodings = self.src_encoding_linear(src_encodings)
+
         src_encodings = src_encodings.unsqueeze(1)
 
         # (batch_size, tgt_action_num, query_vec_size, 1)

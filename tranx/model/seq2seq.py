@@ -3,10 +3,10 @@ from itertools import chain
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torch.nn.utils
 from torch.autograd import Variable
-import torch.nn.functional as F
-from torch.nn.utils.rnn import pad_packed_sequence, pack_padded_sequence
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
 from model import nn_utils
 
@@ -15,11 +15,13 @@ class Seq2SeqModel(nn.Module):
     """
     a standard seq2seq model
     """
+
     def __init__(self, src_vocab, tgt_vocab, embed_size, hidden_size,
                  decoder_word_dropout=0., dropout=0.,
                  label_smoothing=0.,
                  cuda=False,
                  src_embed_layer=None, tgt_embed_layer=None):
+
         super(Seq2SeqModel, self).__init__()
 
         self.embed_size = embed_size

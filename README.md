@@ -11,3 +11,7 @@ A general-purpose Transition-based abstract syntaX parser that maps natural lang
     year = {2018}
 }
 ```
+
+### Notes
+
+- (binary) files with `*_2*` suffix contain `asdl.asdl_base` instead of `asdl.asdl` import
