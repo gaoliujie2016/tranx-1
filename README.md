@@ -1,6 +1,4 @@
-# Automatic Code Generation for Programming Tasks
-
-### TranX
+# TranX
 A general-purpose Transition-based abstract syntaX parser that maps natural language queries into machine executable source code (e.g., Python) or logical forms (e.g., lambda calculus).
 
 ```
